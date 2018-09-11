@@ -43,11 +43,16 @@ func Exp(X *big.Float, n int64) *big.Float {
 func PMF(ρ float64, n int64) func(k int64) float64 {
 
 	if ρ < 0.0 || ρ > 1.0 || n < 1 {
-		fmt.Println("Parameter out of range in Big_Binomial_PMF")
+		fmt.Println("Parameter out of range in BigBinomial.PMF")
 		panic(0)
 	}
 
 	return func(k int64) float64 {
+
+		if k < 0 || k > n {
+			fmt.Println("k out of range in PMF function call")
+			panic(0)
+		}
 
 		b := (&big.Int{}).Binomial(n, k)
 		z := (&big.Float{}).SetPrec(256).SetInt(b)
@@ -60,5 +65,46 @@ func PMF(ρ float64, n int64) func(k int64) float64 {
 		// Discarding accuracy for now...
 		retval, _ := z.Float64()
 		return retval
+	}
+}
+
+// CDF returns a function that calculates the probability ρ Binomial
+// Cumulative Density Function for n trials, for any value of
+// k: 0 <= k <= n
+func CDF(ρ float64, n int64) func(k int64) float64 {
+
+	if ρ < 0.0 || ρ > 1.0 || n < 1 {
+		fmt.Println("Parameter out of range in BigBinomial.CDF")
+		panic(0)
+	}
+
+	pmfFunc := PMF(ρ, n)
+	lastK := int64(-1)
+	lastVal := float64(0.0)
+
+	return func(k int64) float64 {
+
+		if k < 0 || k > n {
+			fmt.Println("k out of range in CDF function call")
+			panic(0)
+		}
+
+		if k == lastK {
+			return lastVal
+		}
+
+		if k == lastK+1 {
+			lastK++
+			lastVal += pmfFunc(k)
+			return lastVal
+		}
+
+		var x int64
+		lastK = k
+		lastVal = 0.0
+		for x = 0; x <= k; x++ {
+			lastVal += pmfFunc(x)
+		}
+		return lastVal
 	}
 }
