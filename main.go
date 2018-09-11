@@ -5,10 +5,10 @@ import (
 	"math/big"
 )
 
-// Exp  Calculates x^n for Big Floats for any int64 n
-func Exp(x_in *big.Float, n int64) *big.Float {
+// Exp Calculates X^n for a bigFloat X for any int64 n
+func Exp(X *big.Float, n int64) *big.Float {
 
-	x := (&big.Float{}).Copy(x_in)
+	x := (&big.Float{}).Copy(X)
 
 	if n < 0 {
 		x = x.Quo(big.NewFloat(1.0), x)
@@ -37,8 +37,9 @@ func Exp(x_in *big.Float, n int64) *big.Float {
 	return x
 }
 
-// PMF  Returns a function that calculates the probability ρ Binomial PMF
-// for n trials, for any value of k: 0 <= k <= n
+// PMF returns a function that calculates the probability ρ Binomial
+// Probability Mass Function for n trials, for any value of
+// k: 0 <= k <= n
 func PMF(ρ float64, n int64) func(k int64) float64 {
 
 	if ρ < 0.0 || ρ > 1.0 || n < 1 {
