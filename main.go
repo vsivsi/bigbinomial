@@ -5,18 +5,22 @@ import (
 	"math/big"
 )
 
-// Exp Calculates X^n for a bigFloat X for any int64 n
-func Exp(X *big.Float, n int64) *big.Float {
+// Pow Calculates X^n for a bigFloat X for any int64 n
+func Pow(X *big.Float, n int64) *big.Float {
 
 	x := (&big.Float{}).Copy(X)
 
-	if n < 0 {
-		x = x.Quo(big.NewFloat(1.0), x)
-		n = -n
+	if n == 0 {
+		// X^0 == 1.0
+		// including when X == 0.0, even though that case may be considered indeterminate.
+		// See: https://github.com/golang/go/issues/7583#issuecomment-66092687
+		return big.NewFloat(1.0)
 	}
 
-	if n == 0 {
-		return big.NewFloat(1.0)
+	if n < 0 {
+		// X^-n == (1/X)^n
+		x = x.Quo(big.NewFloat(1.0), x)
+		n = -n
 	}
 
 	y := big.NewFloat(1.0)
@@ -57,8 +61,8 @@ func PMF(ρ float64, n int64) func(k int64) float64 {
 		b := (&big.Int{}).Binomial(n, k)
 		z := (&big.Float{}).SetPrec(256).SetInt(b)
 		bigP := big.NewFloat(ρ).SetPrec(256)
-		i1 := Exp(bigP, k)
-		i2 := Exp((&big.Float{}).Sub(big.NewFloat(1.0), bigP), n-k)
+		i1 := Pow(bigP, k)
+		i2 := Pow((&big.Float{}).Sub(big.NewFloat(1.0), bigP), n-k)
 		i := (&big.Float{}).Mul(i1, i2)
 		z = z.Mul(z, i)
 
