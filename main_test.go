@@ -14,8 +14,7 @@ func TestPow(t *testing.T) {
    One := big.NewFloat(1.0)
    NegOne := big.NewFloat(-1.0)
    Two := big.NewFloat(2.0)
-   // Ten := big.NewFloat(10.0)
-   // Hundo := big.NewFloat(100.0)
+   Ten := big.NewFloat(10.0)
    Inf := big.NewFloat(0.0).SetInf(false)
    NegInf := big.NewFloat(0.0).SetInf(true)
 
@@ -202,51 +201,57 @@ func TestPow(t *testing.T) {
    })
 
    t.Run("X=10.0,n=2", func(t *testing.T) {
-      if Pow(big.NewFloat(10.0), 2).Cmp(big.NewFloat(math.Pow(10.0, 2))) != 0 {
+      if Pow(Ten, 2).Cmp(big.NewFloat(math.Pow(10.0, 2))) != 0 {
          t.FailNow()
       }
    })
    t.Run("X=10.0,n=5", func(t *testing.T) {
-      if Pow(big.NewFloat(10.0), 5).Cmp(big.NewFloat(math.Pow(10.0, 5))) != 0 {
+      if Pow(Ten, 5).Cmp(big.NewFloat(math.Pow(10.0, 5))) != 0 {
          t.FailNow()
       }
    })
    t.Run("X=10.0,n=25", func(t *testing.T) {
-      if Pow(big.NewFloat(10.0), 25).Cmp(big.NewFloat(math.Pow(10.0, 25))) != 0 {
+      if Pow(Ten, 25).Cmp(big.NewFloat(math.Pow(10.0, 25))) != 0 {
          t.FailNow()
       }
    })
    t.Run("X=10.0,n=250", func(t *testing.T) {
-      if Pow(big.NewFloat(10.0), 250).Cmp(big.NewFloat(math.Pow(10.0, 250))) != 0 {
+      if Pow(Ten, 250).Cmp(big.NewFloat(math.Pow(10.0, 250))) != 0 {
          t.FailNow()
       }
    })
 
-   // These equalities don't work because the two libraries calculate negative exponents differently
+   // These don't work as equalities because the two libraries calculate negative exponents differently
 
-   // t.Run("X=10.0,n=-2", func(t *testing.T) {
-   //    if Pow(big.NewFloat(10.0), -2).Cmp(big.NewFloat(math.Pow(10.0, -2))) != 0 {
-   //       t.FailNow()
-   //    }
-   // })
-   // t.Run("X=10.0,n=-5", func(t *testing.T) {
-   //    if Pow(big.NewFloat(10.0), -5).Cmp(big.NewFloat(math.Pow(10.0, -5))) != 0 {
-   //       t.FailNow()
-   //    }
-   // })
-   // t.Run("X=10.0,n=-25", func(t *testing.T) {
-   //    if Pow(big.NewFloat(10.0), -25).Cmp(big.NewFloat(math.Pow(10.0, -25))) != 0 {
-   //       t.FailNow()
-   //    }
-   // })
-   // t.Run("X=10.0,n=-250", func(t *testing.T) {
-   //    if Pow(big.NewFloat(10.0), -250).Cmp(big.NewFloat(math.Pow(10.0, -250))) != 0 {
-   //       t.FailNow()
-   //    }
-   // })
-
+   t.Run("X=10.0,n=-2", func(t *testing.T) {
+      a, _ := Pow(Ten, -2).Float64()
+      b := math.Pow(10.0, -2)
+      if math.Abs(a - b) / (a + b) > 1.0e-13 {
+         t.FailNow()
+      }
+   })
+   t.Run("X=10.0,n=-5", func(t *testing.T) {
+      a, _ := Pow(Ten, -5).Float64()
+      b := math.Pow(10.0, -5)
+      if math.Abs(a - b) / (a + b) > 1.0e-13 {
+         t.FailNow()
+      }
+   })
+   t.Run("X=10.0,n=-25", func(t *testing.T) {
+      a, _ := Pow(Ten, -25).Float64()
+      b := math.Pow(10.0, -25)
+      if math.Abs(a - b) / (a + b) > 1.0e-13 {
+         t.FailNow()
+      }
+   })
+   t.Run("X=10.0,n=-250", func(t *testing.T) {
+      a, _ := Pow(Ten, -250).Float64()
+      b := math.Pow(10.0, -250)
+      if math.Abs(a - b) / (a + b) > 1.0e-13 {
+         t.FailNow()
+      }
+   })
 }
-
 
 func TestPMF(t *testing.T) {
 
