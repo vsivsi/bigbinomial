@@ -9,24 +9,23 @@ import (
 func Pow(X *big.Float, n int64) *big.Float {
 
 	x := (&big.Float{}).Copy(X)
+	y := (&big.Float{}).SetPrec(x.Prec()).SetUint64(1)
 
 	if n == 0 {
 		// X^0 == 1.0
 		// including when X == 0.0, even though that case may be considered indeterminate.
 		// See: https://github.com/golang/go/issues/7583#issuecomment-66092687
-		return big.NewFloat(1.0)
+		return y
 	}
 
 	if n < 0 {
 		// X^-n == (1/X)^n
-		x = x.Quo(big.NewFloat(1.0), x)
+		x = x.Quo(y, x)
 		n = -n
 	}
 
-	y := big.NewFloat(1.0)
-
 	for n > 1 {
-		if n%2 == 0 {
+		if n % 2 == 0 {
 			x = x.Mul(x, x)
 			n = n / 2
 		} else {
@@ -62,7 +61,7 @@ func PMF(ρ float64, n int64) func(k int64) float64 {
 		z := (&big.Float{}).SetPrec(256).SetInt(b)
 		bigP := big.NewFloat(ρ).SetPrec(256)
 		i1 := Pow(bigP, k)
-		i2 := Pow((&big.Float{}).Sub(big.NewFloat(1.0), bigP), n-k)
+		i2 := Pow((&big.Float{}).Sub(big.NewFloat(1.0), bigP), n - k)
 		i := (&big.Float{}).Mul(i1, i2)
 		z = z.Mul(z, i)
 
@@ -73,7 +72,7 @@ func PMF(ρ float64, n int64) func(k int64) float64 {
 }
 
 // CDF returns a function that calculates the probability ρ Binomial
-// Cumulative Density Function for n trials, for any value of
+// Cumulative Distribution Function for n trials, for any value of
 // k: 0 <= k <= n
 func CDF(ρ float64, n int64) func(k int64) float64 {
 

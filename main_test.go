@@ -2,7 +2,7 @@ package BigBinomial
 
 import (
    "testing"
-	// "fmt"
+	"math"
 	"math/big"
 )
 
@@ -200,5 +200,49 @@ func TestPow(t *testing.T) {
          t.FailNow()
       }
    })
+
+   t.Run("X=10.0,n=2", func(t *testing.T) {
+      if Pow(big.NewFloat(10.0), 2).Cmp(big.NewFloat(math.Pow(10.0, 2))) != 0 {
+         t.FailNow()
+      }
+   })
+   t.Run("X=10.0,n=5", func(t *testing.T) {
+      if Pow(big.NewFloat(10.0), 5).Cmp(big.NewFloat(math.Pow(10.0, 5))) != 0 {
+         t.FailNow()
+      }
+   })
+   t.Run("X=10.0,n=25", func(t *testing.T) {
+      if Pow(big.NewFloat(10.0), 25).Cmp(big.NewFloat(math.Pow(10.0, 25))) != 0 {
+         t.FailNow()
+      }
+   })
+   t.Run("X=10.0,n=250", func(t *testing.T) {
+      if Pow(big.NewFloat(10.0), 250).Cmp(big.NewFloat(math.Pow(10.0, 250))) != 0 {
+         t.FailNow()
+      }
+   })
+
+   // These equalities don't work because the two libraries calculate negative exponents differently
+
+   // t.Run("X=10.0,n=-2", func(t *testing.T) {
+   //    if Pow(big.NewFloat(10.0), -2).Cmp(big.NewFloat(math.Pow(10.0, -2))) != 0 {
+   //       t.FailNow()
+   //    }
+   // })
+   // t.Run("X=10.0,n=-5", func(t *testing.T) {
+   //    if Pow(big.NewFloat(10.0), -5).Cmp(big.NewFloat(math.Pow(10.0, -5))) != 0 {
+   //       t.FailNow()
+   //    }
+   // })
+   // t.Run("X=10.0,n=-25", func(t *testing.T) {
+   //    if Pow(big.NewFloat(10.0), -25).Cmp(big.NewFloat(math.Pow(10.0, -25))) != 0 {
+   //       t.FailNow()
+   //    }
+   // })
+   // t.Run("X=10.0,n=-250", func(t *testing.T) {
+   //    if Pow(big.NewFloat(10.0), -250).Cmp(big.NewFloat(math.Pow(10.0, -250))) != 0 {
+   //       t.FailNow()
+   //    }
+   // })
 
 }
