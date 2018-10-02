@@ -246,3 +246,73 @@ func TestPow(t *testing.T) {
    // })
 
 }
+
+
+func TestPMF(t *testing.T) {
+
+   BinomialPMF := func (ρ float64, n int64) func(k int64) float64 {
+       return func(k int64) float64 {
+           p := math.Pow(ρ, float64(k)) * math.Pow(1-ρ, float64(n-k))
+           p *= math.Gamma(float64(n+1)) / (math.Gamma(float64(k+1)) * math.Gamma(float64(n-k+1)))
+           return p
+       }
+   }
+
+   BinError := func (p float64, n int64) float64 {
+      FloatPMF := BinomialPMF(p, n)
+      BigPMF := PMF(p, n)
+      err := 0.0
+      for x := int64(0); x <= n; x++ {
+         err += math.Abs(BigPMF(x) - FloatPMF(x))
+      }
+      return err
+   }
+
+   t.Run("p=0.5,n=2", func(t *testing.T) {
+      if BinError(0.5, 2) > 1.0e-14 {
+         t.FailNow()
+      }
+   })
+   t.Run("p=0.5,n=20", func(t *testing.T) {
+      if BinError(0.5, 20) > 1.0e-14 {
+         t.FailNow()
+      }
+   })
+   t.Run("p=0.5,n=200", func(t *testing.T) {
+      if BinError(0.5, 200) > 1.0e-14 {
+         t.FailNow()
+      }
+   })
+
+   t.Run("p=0.05,n=2", func(t *testing.T) {
+      if BinError(0.5, 2) > 1.0e-14 {
+         t.FailNow()
+      }
+   })
+   t.Run("p=0.05,n=20", func(t *testing.T) {
+      if BinError(0.5, 20) > 1.0e-14 {
+         t.FailNow()
+      }
+   })
+   t.Run("p=0.05,n=200", func(t *testing.T) {
+      if BinError(0.5, 200) > 1.0e-14 {
+         t.FailNow()
+      }
+   })
+
+   t.Run("p=0.0005,n=2", func(t *testing.T) {
+      if BinError(0.5, 2) > 1.0e-14 {
+         t.FailNow()
+      }
+   })
+   t.Run("p=0.0005,n=20", func(t *testing.T) {
+      if BinError(0.5, 20) > 1.0e-14 {
+         t.FailNow()
+      }
+   })
+   t.Run("p=0.005,n=200", func(t *testing.T) {
+      if BinError(0.5, 200) > 1.0e-14 {
+         t.FailNow()
+      }
+   })
+}
