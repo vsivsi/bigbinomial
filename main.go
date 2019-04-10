@@ -25,7 +25,7 @@ func Pow(X *big.Float, n int64) *big.Float {
 	}
 
 	for n > 1 {
-		if n % 2 == 0 {
+		if n%2 == 0 {
 			x = x.Mul(x, x)
 			n = n / 2
 		} else {
@@ -58,10 +58,12 @@ func PMF(ρ float64, n int64) func(k int64) float64 {
 		}
 
 		b := (&big.Int{}).Binomial(n, k)
-		z := (&big.Float{}).SetPrec(256).SetInt(b)
-		bigP := big.NewFloat(ρ).SetPrec(256)
+		bits := uint(b.BitLen()) + 64
+		z := (&big.Float{}).SetPrec(bits).SetInt(b)
+		bigP := big.NewFloat(ρ).SetPrec(bits)
+
 		i1 := Pow(bigP, k)
-		i2 := Pow((&big.Float{}).Sub(big.NewFloat(1.0), bigP), n - k)
+		i2 := Pow((&big.Float{}).Sub(big.NewFloat(1.0), bigP), n-k)
 		i := (&big.Float{}).Mul(i1, i2)
 		z = z.Mul(z, i)
 
