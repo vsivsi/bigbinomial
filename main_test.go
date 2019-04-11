@@ -237,3 +237,17 @@ func TestPMF(t *testing.T) {
 		assertPMFTol(0.5, 200, 1.0e-14, t)
 	})
 }
+
+func TestCDF(t *testing.T) {
+
+	floatCDF := CDF(0.5, 200)
+	floatPMF := PMF(0.5, 200)
+
+	if floatCDF(100) != floatCDF(99)+floatPMF(100) {
+		t.Fatal("CDF(n) != CDF(n-1) + PMF(n)")
+	}
+
+	if floatCDF(100) != floatCDF(101)-floatPMF(101) {
+		t.Fatal("CDF(n) != CDF(n+1) - PMF(n+1)")
+	}
+}
