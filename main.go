@@ -43,18 +43,20 @@ func Pow(X *big.Float, n int64) *big.Float {
 // PMF returns a function that calculates the probability ρ Binomial
 // Probability Mass Function for n trials, for any value of
 // k: 0 <= k <= n
-func PMF(ρ float64, n int64) func(k int64) float64 {
+func PMF(ρ float64, n int64) (func(k int64) float64, error) {
 
-	if ρ < 0.0 || ρ > 1.0 || n < 1 {
-		fmt.Println("Parameter out of range in BigBinomial.PMF")
-		panic(0)
+	if ρ < 0.0 || ρ > 1.0 {
+		return nil, fmt.Errorf("Parameter ρ must be between 0.0 and 1.0, ρ = %g", ρ)
+	}
+
+	if n <= 0 {
+		return nil, fmt.Errorf("Parameter n must be greater than 0, n = %d", n)
 	}
 
 	return func(k int64) float64 {
 
 		if k < 0 || k > n {
-			fmt.Println("k out of range in PMF function call")
-			panic(0)
+			return 0.0
 		}
 
 		b := (&big.Int{}).Binomial(n, k)
@@ -70,28 +72,30 @@ func PMF(ρ float64, n int64) func(k int64) float64 {
 		// Discarding accuracy for now...
 		retval, _ := z.Float64()
 		return retval
-	}
+	}, nil
 }
 
 // CDF returns a function that calculates the probability ρ Binomial
 // Cumulative Distribution Function for n trials, for any value of
 // k: 0 <= k <= n
-func CDF(ρ float64, n int64) func(k int64) float64 {
+func CDF(ρ float64, n int64) (func(k int64) float64, error) {
 
-	if ρ < 0.0 || ρ > 1.0 || n < 1 {
-		fmt.Println("Parameter out of range in BigBinomial.CDF")
-		panic(0)
+	pmfFunc, err := PMF(ρ, n)
+	if err != nil {
+		return nil, err
 	}
 
-	pmfFunc := PMF(ρ, n)
 	lastK := int64(-1)
 	lastVal := float64(0.0)
 
 	return func(k int64) float64 {
 
-		if k < 0 || k > n {
-			fmt.Println("k out of range in CDF function call")
-			panic(0)
+		if k < 0 {
+			return 0.0
+		}
+
+		if k > n {
+			return 1.0
 		}
 
 		if k == lastK {
@@ -111,5 +115,5 @@ func CDF(ρ float64, n int64) func(k int64) float64 {
 			lastVal += pmfFunc(x)
 		}
 		return lastVal
-	}
+	}, nil
 }
