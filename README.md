@@ -5,8 +5,8 @@ Golang package implementing binomial distribution PMF and CDF functions using go
 
 ```golang
 import (
-   "math"
-   "github.com/vsivsi/bigbinomial"
+	"math"
+	"github.com/vsivsi/bigbinomial"
 )
 
 // It is straightforward to implement the Binomial PMF using math library functions:
@@ -14,8 +14,8 @@ import (
 func binomialPMF(ρ float64, n int64) func(k int64) float64 {
 	return func(k int64) float64 {
 		p := math.Pow(ρ, float64(k)) * math.Pow(1-ρ, float64(n-k))
-      p *= math.Gamma(float64(n+1)) / 
-           (math.Gamma(float64(k+1)) * math.Gamma(float64(n-k+1)))
+		p *= math.Gamma(float64(n+1)) / 
+			(math.Gamma(float64(k+1)) * math.Gamma(float64(n-k+1)))
 		return p
 	}
 }
@@ -40,7 +40,7 @@ prob = pmf(500)  // prob == 0.0252250181783608
 
 ```golang
 import (
-   "github.com/vsivsi/bigbinomial"
+	"github.com/vsivsi/bigbinomial"
 )
 
 cdf, _ := BigBinomial.CDF(0.5, 1000)
@@ -53,9 +53,9 @@ A big.Float implementation of Pow was required for the above, and since the math
 
 ```golang
 import (
-   "github.com/vsivsi/bigbinomial"
-   "math/big"
-   "math"
+	"github.com/vsivsi/bigbinomial"
+	"math/big"
+	"math"
 )
 
 // BigBinomial also implements, uses and exports a bigFloat implementation
