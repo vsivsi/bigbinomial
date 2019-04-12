@@ -11,7 +11,7 @@ import (
 
 // It is straightforward to implement the Binomial PMF using math library functions:
 
-binomialPMF := func(ρ float64, n int64) func(k int64) float64 {
+func binomialPMF(ρ float64, n int64) func(k int64) float64 {
 	return func(k int64) float64 {
 		p := math.Pow(ρ, float64(k)) * math.Pow(1-ρ, float64(n-k))
       p *= math.Gamma(float64(n+1)) / 
@@ -29,10 +29,10 @@ pmf = binomialPMF(0.5, 1000)
 prob = pmf(500) // prob == NaN (!)
 
 // BigBinomial uses the golang math/big library to remove this limitation
-pmf = BigBinomial.PMF(0.5, 100)
+pmf, _ = BigBinomial.PMF(0.5, 100)
 prob = pmf(50)  // prob == 0.07958923738717877
 
-pmf = BigBinomial.PMF(0.5, 1000)
+pmf, _ = BigBinomial.PMF(0.5, 1000)
 prob = pmf(500)  // prob == 0.0252250181783608
 ```
 
@@ -43,8 +43,8 @@ import (
    "github.com/vsivsi/bigbinomial"
 )
 
-cdf := BigBinomial.CDF(0.5, 1000)
-prob = cdf(500)  // prob == 0.5126125090891803
+cdf, _ := BigBinomial.CDF(0.5, 1000)
+prob := cdf(500)  // prob == 0.5126125090891803
 ```
 
 ## Pow method for big.Float type, with int64 exponents
@@ -62,20 +62,19 @@ import (
 // of math.Pow(), but restricted to integer exponents
 
 // Defaults to double precision equivalent
-math.Pow(10.0, 250)        // 1.0000000000000004e+250
-BigBinomial.Pow(10.0, 250) // 1.0000000000000004e+250
-BigBinomial.Pow(10.0, 250).Cmp(big.NewFloat(math.Pow(10.0, 250))) // 0 --> equal
+val := math.Pow(10.0, 250)           //     val == 1.0000000000000004e+250
+bigVal := BigBinomial.Pow(10.0, 250) //  bigVal == 1.0000000000000004e+250
+cmp := BigBinomial.Pow(10.0, 250).Cmp(big.NewFloat(math.Pow(10.0, 250))) // cmp == 0 --> equal
 
 // More accurate for higher precision inputs
 bigten := (&big.Float{}).SetPrec(300).SetInt64(10)
-BigBinomial.Pow(bigten, 250)  // 1e+250
+bigVal = BigBinomial.Pow(bigten, 250) //  bigVal == 1e+250
 
 // Handles much larger exponents
-math.Pow(10.0, 2500)         // +Inf
-BigBinomial.Pow(10.0, 2500)  // 1.0000000000000052e+2500
+val = math.Pow(10.0, 2500)            // val == +Inf
+bigVal = BigBinomial.Pow(10.0, 2500)  // bigVal == 1.0000000000000052e+2500
 
 // And much smaller ones
-math.Pow(10.0, -2500)         // 0
-BigBinomial.Pow(10.0, -2500)  // 1.0000000000002682e-2500
-
+val = math.Pow(10.0, -2500)            // val == 0
+bigVal = BigBinomial.Pow(10.0, -2500)  // bigVal == 1.0000000000002682e-2500
 ```
