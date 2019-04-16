@@ -4,66 +4,8 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/ALTree/bigfloat"
+	"github.com/vsivsi/bigfloat" // was: "github.com/ALTree/bigfloat"
 )
-
-// Pow Calculates X^n for a bigFloat X for any int64 n
-func Pow(X *big.Float, n int64) *big.Float {
-
-	// x := (&big.Float{}).Copy(X)
-	// y := (&big.Float{}).SetPrec(x.Prec()).SetUint64(1)
-
-	// if n == 0 {
-	// 	// X^0 == 1.0
-	// 	// including when X == 0.0, even though that case may be considered indeterminate.
-	// 	// See: https://github.com/golang/go/issues/7583#issuecomment-66092687
-	// 	return y
-	// }
-
-	// if n < 0 {
-	// 	// X^-n == (1/X)^n
-	// 	x = x.Quo(y, x)
-	// 	n = -n
-	// }
-
-	return bigfloat.Pow(X, big.NewFloat(float64(n)))
-
-}
-
-// // Pow Calculates X^n for a bigFloat X for any int64 n
-// func Pow(X *big.Float, n int64) *big.Float {
-
-// 	x := (&big.Float{}).Copy(X)
-// 	y := (&big.Float{}).SetPrec(x.Prec()).SetUint64(1)
-
-// 	if n == 0 {
-// 		// X^0 == 1.0
-// 		// including when X == 0.0, even though that case may be considered indeterminate.
-// 		// See: https://github.com/golang/go/issues/7583#issuecomment-66092687
-// 		return y
-// 	}
-
-// 	if n < 0 {
-// 		// X^-n == (1/X)^n
-// 		x = x.Quo(y, x)
-// 		n = -n
-// 	}
-
-// 	for n > 1 {
-// 		if n%2 == 0 {
-// 			x = x.Mul(x, x)
-// 			n = n / 2
-// 		} else {
-// 			y = y.Mul(y, x)
-// 			x = x.Mul(x, x)
-// 			n = (n - 1) / 2
-// 		}
-// 	}
-
-// 	x = x.Mul(x, y)
-
-// 	return x
-// }
 
 // PMF returns a function that calculates the probability ρ Binomial
 // Probability Mass Function for n trials, for any value of
