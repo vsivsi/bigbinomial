@@ -20,7 +20,7 @@ func TestPow(t *testing.T) {
 	Inf := big.NewFloat(0.0).SetInf(false)
 	NegInf := big.NewFloat(0.0).SetInf(true)
 
-	Tol := 1.0e-13
+	Tol := 1.0e-15
 
 	bigAssert := func(got, want *big.Float, t *testing.T) {
 		t.Helper()
