@@ -1,4 +1,4 @@
-# BigBinomial
+# bigbinomial
 Golang package implementing binomial distribution PMF and CDF functions using the math/big library to allow calculations for larger numbers of trials than is possible using ordinary floating point arithmetic.
 
 ## Binomial Distribution Probability Mass Function (PMF)  
@@ -33,11 +33,11 @@ prob := pmf(50)             // prob == 0.07958923738717867, or about 8%
 pmf = binomialPMF(0.5, 1000)
 prob = pmf(500)  // prob == NaN (!)
 
-// BigBinomial uses the golang math/big library to remove this limitation
-pmf, _ = BigBinomial.PMF(0.5, 50)
+// bigbinomial uses the golang math/big library to remove this limitation
+pmf, _ = bigbinomial.PMF(0.5, 50)
 prob = pmf(50)   // prob == 0.07958923738717877
 
-pmf, _ = BigBinomial.PMF(0.5, 1000)
+pmf, _ = bigbinomial.PMF(0.5, 1000)
 prob = pmf(500)  // prob == 0.0252250181783608
 ```
 
@@ -54,6 +54,6 @@ import (
 	"github.com/vsivsi/bigbinomial"
 )
 
-cdf, _ := BigBinomial.CDF(0.5, 1000)
+cdf, _ := bigbinomial.CDF(0.5, 1000)
 prob := cdf(500)   // prob == 0.5126125090891803
 ```

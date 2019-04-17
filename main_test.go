@@ -1,4 +1,4 @@
-package BigBinomial
+package bigbinomial
 
 import (
 	"math"
@@ -8,7 +8,7 @@ import (
 	"github.com/vsivsi/bigfloat"
 )
 
-// TestPow tests the BigBinomial.Pow function
+// TestPow tests the bigfloat.Pow function
 func TestPow(t *testing.T) {
 
 	Zero := big.NewFloat(0.0)
@@ -188,6 +188,7 @@ func TestPow(t *testing.T) {
 	})
 }
 
+// TestPMF implements unit tests for the bigbinomial.PMF function
 func TestPMF(t *testing.T) {
 
 	binomialPMF := func(ρ float64, n int64) func(k int64) float64 {
@@ -254,6 +255,7 @@ func TestPMF(t *testing.T) {
 	})
 }
 
+// TestCDF implements unit tests for the bigbinomial.CDF function
 func TestCDF(t *testing.T) {
 
 	ρ := 0.5
