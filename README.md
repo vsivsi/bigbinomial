@@ -47,7 +47,7 @@ The binomial CDF calculates for n independant binary trials, each with success r
 
 So for 1000 flips of a fair coin, CDF(500) calculates the probabilty that the number of heads will be less than or equal to 500.
 
-This implementation of CDF ["memoizes"](https://en.wikipedia.org/wiki/Memoization) its results for consecutive values of k, so that calling it for k = 0...n will be much faster than k = n...0 (O(n) vs O(n^2) time). 
+This implementation of CDF ["memoizes"](https://en.wikipedia.org/wiki/Memoization) its results for increasing consecutive values of k, so that calling it for k = 0...n will be much faster than k = n...0 (O(n) vs O(n^2) time, using constant memory). 
 
 ```golang
 import (
