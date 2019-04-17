@@ -1,5 +1,5 @@
 # BigBinomial
-Golang package implementing binomial distribution PMF and CDF functions using golang's math/big library to allow larger values of n.
+Golang package implementing binomial distribution PMF and CDF functions using the math/big library to allow calculations for larger numbers of trials than is possible using ordinary floating point arithmetic.
 
 ## Binomial Distribution Probability Mass Function (PMF)  
 
