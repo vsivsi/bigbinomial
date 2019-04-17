@@ -1,5 +1,5 @@
 # BigBinomial
-Golang package implementing binomial distribution PMF and CDF functions using golang's math/big library to allow larger values of n. Also exports a big.Float Pow method for int64 exponents.
+Golang package implementing binomial distribution PMF and CDF functions using golang's math/big library to allow larger values of n.
 
 ## Binomial Distribution Probability Mass Function (PMF)  
 
@@ -45,36 +45,4 @@ import (
 
 cdf, _ := BigBinomial.CDF(0.5, 1000)
 prob := cdf(500)  // prob == 0.5126125090891803
-```
-
-## Pow method for big.Float type, with int64 exponents
-
-A big.Float implementation of Pow was required for the above, and since the math/big library doesn't currently provide one, it is also exported. It is currently only defined for integer exponents.
-
-```golang
-import (
-	"github.com/vsivsi/bigbinomial"
-	"math/big"
-	"math"
-)
-
-// BigBinomial also implements, uses and exports a bigFloat implementation
-// of math.Pow(), but restricted to integer exponents
-
-// Defaults to double precision equivalent
-val := math.Pow(10.0, 250)           //     val == 1.0000000000000004e+250
-bigVal := BigBinomial.Pow(10.0, 250) //  bigVal == 1.0000000000000004e+250
-cmp := BigBinomial.Pow(10.0, 250).Cmp(big.NewFloat(math.Pow(10.0, 250))) // cmp == 0 --> equal
-
-// More accurate for higher precision inputs
-bigten := (&big.Float{}).SetPrec(300).SetInt64(10)
-bigVal = BigBinomial.Pow(bigten, 250) //  bigVal == 1e+250
-
-// Handles much larger exponents
-val = math.Pow(10.0, 2500)            // val == +Inf
-bigVal = BigBinomial.Pow(10.0, 2500)  // bigVal == 1.0000000000000052e+2500
-
-// And much smaller ones
-val = math.Pow(10.0, -2500)            // val == 0
-bigVal = BigBinomial.Pow(10.0, -2500)  // bigVal == 1.0000000000002682e-2500
 ```
