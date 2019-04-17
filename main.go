@@ -32,7 +32,7 @@ func PMF(ρ float64, n int64) (func(k int64) float64, error) {
 		bigP := big.NewFloat(ρ).SetPrec(bits)
 
 		i1 := bigfloat.Pow(bigP, big.NewFloat(float64(k)))
-		i2 := bigfloat.Pow((&big.Float{}).Sub(big.NewFloat(1.0), bigP), big.NewFloat(float64(n-k)))
+		i2 := bigfloat.Pow((&big.Float{}).SetPrec(bits).Sub(big.NewFloat(1.0), bigP), big.NewFloat(float64(n-k)))
 		i := i1.Mul(i1, i2)
 		z = z.Mul(z, i)
 
