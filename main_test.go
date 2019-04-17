@@ -211,44 +211,46 @@ func TestPMF(t *testing.T) {
 		}
 	}
 
+	Tol := 1.0e-15
+
 	t.Run("PMF(0.5, 2)", func(t *testing.T) {
-		assertPMFTol(0.5, 2, 1.0e-14, t)
+		assertPMFTol(0.5, 2, Tol, t)
 	})
 	t.Run("PMF(0.5, 20)", func(t *testing.T) {
-		assertPMFTol(0.5, 20, 1.0e-14, t)
+		assertPMFTol(0.5, 20, Tol, t)
 	})
 	t.Run("PMF(0.5, 200)", func(t *testing.T) {
-		assertPMFTol(0.5, 200, 1.0e-14, t)
+		assertPMFTol(0.5, 200, Tol, t)
 	})
 
 	t.Run("PMF(0.15, 2)", func(t *testing.T) {
-		assertPMFTol(0.15, 2, 1.0e-14, t)
+		assertPMFTol(0.15, 2, Tol, t)
 	})
 	t.Run("PMF(0.15, 20)", func(t *testing.T) {
-		assertPMFTol(0.15, 20, 1.0e-14, t)
+		assertPMFTol(0.15, 20, Tol, t)
 	})
 	t.Run("PMF(0.15, 200)", func(t *testing.T) {
-		assertPMFTol(0.15, 200, 1.0e-14, t)
+		assertPMFTol(0.15, 200, Tol, t)
 	})
 
 	t.Run("PMF(0.5, 2)", func(t *testing.T) {
-		assertPMFTol(0.5, 2, 1.0e-14, t)
+		assertPMFTol(0.5, 2, Tol, t)
 	})
 	t.Run("PMF(0.5, 20)", func(t *testing.T) {
-		assertPMFTol(0.5, 20, 1.0e-14, t)
+		assertPMFTol(0.5, 20, Tol, t)
 	})
 	t.Run("PMF(0.5, 200)", func(t *testing.T) {
-		assertPMFTol(0.5, 200, 1.0e-14, t)
+		assertPMFTol(0.5, 200, Tol, t)
 	})
 
 	t.Run("PMF(0.5, 2)", func(t *testing.T) {
-		assertPMFTol(0.5, 2, 1.0e-14, t)
+		assertPMFTol(0.5, 2, Tol, t)
 	})
 	t.Run("PMF(0.5, 20)", func(t *testing.T) {
-		assertPMFTol(0.5, 20, 1.0e-14, t)
+		assertPMFTol(0.5, 20, Tol, t)
 	})
 	t.Run("PMF(0.5, 200)", func(t *testing.T) {
-		assertPMFTol(0.5, 200, 1.0e-14, t)
+		assertPMFTol(0.5, 200, Tol, t)
 	})
 }
 
