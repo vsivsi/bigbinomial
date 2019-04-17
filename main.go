@@ -1,3 +1,5 @@
+// Package BigBinomial calculates the binomial distribution for larger numbers
+// of (n) trials than is possible using ordinary floating point arithmetic.
 package BigBinomial
 
 import (
