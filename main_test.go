@@ -254,18 +254,21 @@ func TestPMF(t *testing.T) {
 
 func TestCDF(t *testing.T) {
 
-	floatCDF, _ := CDF(0.5, 200)
-	floatPMF, _ := PMF(0.5, 200)
+	ρ := 0.5
+	n := int64(200)
 
-	if floatCDF(100) != floatCDF(99)+floatPMF(100) {
+	floatCDF, _ := CDF(ρ, n)
+	floatPMF, _ := PMF(ρ, n)
+
+	if floatCDF(n/2) != floatCDF(n/2-1)+floatPMF(n/2) {
 		t.Error("CDF(k) != CDF(k-1) + PMF(k)")
 	}
 
-	if floatCDF(100) != floatCDF(101)-floatPMF(101) {
+	if floatCDF(n/2) != floatCDF(n/2+1)-floatPMF(n/2+1) {
 		t.Error("CDF(k) != CDF(k+1) - PMF(k+1)")
 	}
 
-	if floatCDF(100) != floatCDF(100) {
+	if floatCDF(n/2) != floatCDF(n/2) {
 		t.Error("CDF(k) != CDF(k)")
 	}
 
@@ -273,7 +276,7 @@ func TestCDF(t *testing.T) {
 		t.Error("PMF(-1) != 0.0")
 	}
 
-	if floatPMF(201) != 0.0 {
+	if floatPMF(n+1) != 0.0 {
 		t.Error("PMF(n+1) != 0.0")
 	}
 
@@ -281,19 +284,23 @@ func TestCDF(t *testing.T) {
 		t.Error("CDF(-1) != 0.0")
 	}
 
-	if floatCDF(201) != 1.0 {
+	if floatCDF(n+1) != 1.0 {
 		t.Error("CDF(n+1) != 1.0")
 	}
 
-	if _, err := CDF(-1.0, 200); err == nil {
+	if floatCDF(n) != 1.0 {
+		t.Error("CDF(n) != 1.0")
+	}
+
+	if _, err := CDF(-1.0, n); err == nil {
 		t.Error("ρ < 0.0 should be an error")
 	}
 
-	if _, err := CDF(2.0, 200); err == nil {
+	if _, err := CDF(2.0, n); err == nil {
 		t.Error("ρ > 1.0 should be an error")
 	}
 
-	if _, err := CDF(0.5, 0); err == nil {
+	if _, err := CDF(ρ, 0); err == nil {
 		t.Error("n <= 0 should be an error")
 	}
 }
