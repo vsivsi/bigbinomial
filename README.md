@@ -5,7 +5,7 @@ Golang package implementing binomial distribution PMF and CDF functions, using t
 
 The binomial PMF calculates, for n independant binary trials each with success rate ρ, the probability that k out of n will be successful.
 
-For example: if you flip a fair coin 50 times (ρ=0.5, n=50), the probability of flipping heads exactly 25 times (k=25) is pmf(k).
+For example: if you flip a fair coin 50 times (ρ=0.5, n=50), the probability of flipping heads exactly 25 times (k=25) is PMF(ρ, n, k).
 
 This package implements a function `PMF(ρ, n)` that returns a function `pmf(k)`.
 
@@ -45,7 +45,7 @@ prob = pmf(500)  // prob == 0.0252250181783608
 
 ## Binomial Distribution Cumulative Distribution Function (CDF)
 
-The binomial CDF calculates, for n independant binary trials each with success rate ρ, CDF(k) the probability that between 0 and k trials will be successful.
+The binomial CDF calculates, for n independant binary trials each with success rate ρ, CDF(ρ, n, k) is the probability that between 0 and k trials will be successful.
 
 So for 1000 flips of a fair coin, cdf(500) calculates the probabilty that the number of heads will be less than or equal to 500.
 
