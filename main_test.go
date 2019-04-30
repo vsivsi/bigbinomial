@@ -8,86 +8,30 @@ import (
 	"testing"
 )
 
-// TestPow tests the bigfloat.Pow function
-func TestPow(t *testing.T) {
+// tolerance used for all epsilon tests
+const ε = 1.0e-15
 
-	Zero := big.NewFloat(0.0)
-	NegZero := big.NewFloat(0.0).Neg(Zero)
-	One := big.NewFloat(1.0)
-	NegOne := big.NewFloat(-1.0)
-	Two := big.NewFloat(2.0)
-	Ten := big.NewFloat(10.0)
-	Inf := big.NewFloat(0.0).SetInf(false)
-	NegInf := big.NewFloat(0.0).SetInf(true)
+// assert.ComparisonAssertionFunction compatible wrapper for assert.InEpsilon
+func epsilon(t assert.TestingT, expected, actual interface{}, msgAndArgs ...interface{}) bool {
+	return assert.InEpsilon(t, expected, actual, ε)
+}
 
-	// Pow Calculates X^n for a bigFloat X for any int64 n
-	Pow := func(X *big.Float, n int64) *big.Float {
-		return bigfloat.Pow(X, big.NewFloat(float64(n)))
-	}
+// tolerance used for all delta tests
+const δ = 1.0e-14
 
-	Epsilon := func(tol float64) assert.ComparisonAssertionFunc {
-		return func(t assert.TestingT, expected, actual interface{}, msgAndArgs ...interface{}) bool {
-			return assert.InEpsilon(t, expected, actual, tol)
-		}
-	}(1.0e-15)
+// assert.ComparisonAssertionFunction compatible wrapper for assert.InDelta
+func delta(t assert.TestingT, expected, actual interface{}, msgAndArgs ...interface{}) bool {
+	return assert.InDelta(t, expected, actual, δ)
+}
 
-	toFloat64 := func(x *big.Float) float64 {
-		val, _ := x.Float64()
-		return val
-	}
+type testCmpSlice []struct {
+	name   string
+	actual interface{}
+	expect interface{}
+	assert assert.ComparisonAssertionFunc
+}
 
-	tests := []struct {
-		name   string
-		actual interface{}
-		expect interface{}
-		assert assert.ComparisonAssertionFunc
-	}{
-		{"Pow(Inf, 0)", Pow(Inf, 0), One, assert.Equal},
-		{"Pow(Inf, 1)", Pow(Inf, 1), Inf, assert.Equal},
-		{"Pow(Inf, 2)", Pow(Inf, 2), Inf, assert.Equal},
-		{"Pow(Inf, -1)", Pow(Inf, -1), Zero, assert.Equal},
-		{"Pow(Inf, -2)", Pow(Inf, -2), Zero, assert.Equal},
-		{"Pow(NegInf, 0)", Pow(NegInf, 0), One, assert.Equal},
-		{"Pow(NegInf, 1)", Pow(NegInf, 1), NegInf, assert.Equal},
-		{"Pow(NegInf, 2)", Pow(NegInf, 2), Inf, assert.Equal},
-		{"Pow(NegInf, -1)", Pow(NegInf, -1), NegZero, assert.Equal},
-		{"Pow(NegInf, -2)", Pow(NegInf, -2), Zero, assert.Equal},
-		{"Pow(Zero, 0)", Pow(Zero, 0), One, assert.Equal},
-		{"Pow(Zero, 1)", Pow(Zero, 1), Zero, assert.Equal},
-		{"Pow(Zero, 2)", Pow(Zero, 2), Zero, assert.Equal},
-		{"Pow(Zero, -1)", Pow(Zero, -1), Inf, assert.Equal},
-		{"Pow(Zero, -2)", Pow(Zero, -2), Inf, assert.Equal},
-		{"Pow(NegZero, 0)", Pow(NegZero, 0), One, assert.Equal},
-		{"Pow(NegZero, 1)", Pow(NegZero, 1), NegZero, assert.Equal},
-		{"Pow(NegZero, 2)", Pow(NegZero, 2), Zero, assert.Equal},
-		{"Pow(NegZero, -1)", Pow(NegZero, -1), NegInf, assert.Equal},
-		{"Pow(NegZero, -2)", Pow(NegZero, -2), Inf, assert.Equal},
-		{"Pow(One, 0)", Pow(One, 0), One, assert.Equal},
-		{"Pow(One, 1)", Pow(One, 1), One, assert.Equal},
-		{"Pow(One, 2)", Pow(One, 2), One, assert.Equal},
-		{"Pow(One, -1)", Pow(One, -1), One, assert.Equal},
-		{"Pow(One, -2)", Pow(One, -2), One, assert.Equal},
-		{"Pow(NegOne, 0)", Pow(NegOne, 0), One, assert.Equal},
-		{"Pow(NegOne, 1)", Pow(NegOne, 1), NegOne, assert.Equal},
-		{"Pow(NegOne, 2)", Pow(NegOne, 2), One, assert.Equal},
-		{"Pow(NegOne, 1)", Pow(NegOne, 1), NegOne, assert.Equal},
-		{"Pow(NegOne, 2)", Pow(NegOne, 2), One, assert.Equal},
-		{"Pow(Two, 0)", Pow(Two, 0), One, assert.Equal},
-		{"Pow(Two, 1)", Pow(Two, 1), Two, assert.Equal},
-		{"Pow(Two, 2)", Pow(Two, 2), big.NewFloat(0).Mul(Two, Two), assert.Equal},
-		{"Pow(Two, -1)", Pow(Two, -1), big.NewFloat(0).Quo(One, Two), assert.Equal},
-		{"Pow(Two, -2)", Pow(Two, -2), big.NewFloat(0).Quo(One, big.NewFloat(0).Mul(Two, Two)), assert.Equal},
-		// Epsilon tests
-		{"Pow(Ten, 2)", toFloat64(Pow(Ten, 2)), math.Pow(10.0, 2), Epsilon},
-		{"Pow(Ten, 5)", toFloat64(Pow(Ten, 5)), math.Pow(10.0, 5), Epsilon},
-		{"Pow(Ten, 25)", toFloat64(Pow(Ten, 25)), math.Pow(10.0, 25), Epsilon},
-		{"Pow(Ten, 250)", toFloat64(Pow(Ten, 250)), math.Pow(10.0, 250), Epsilon},
-		{"Pow(Ten, -2)", toFloat64(Pow(Ten, -2)), math.Pow(10.0, -2), Epsilon},
-		{"Pow(Ten, -5)", toFloat64(Pow(Ten, -5)), math.Pow(10.0, -5), Epsilon},
-		{"Pow(Ten, -25)", toFloat64(Pow(Ten, -25)), math.Pow(10.0, -25), Epsilon},
-		{"Pow(Ten, -250)", toFloat64(Pow(Ten, -250)), math.Pow(10.0, -250), Epsilon},
-	}
-
+func runTests(t *testing.T, tests testCmpSlice) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.assert(t, tt.actual, tt.expect)
@@ -95,71 +39,112 @@ func TestPow(t *testing.T) {
 	}
 }
 
+// TestPow tests the bigfloat.Pow function
+func TestPow(t *testing.T) {
+
+	// pow Calculates X^n for a bigFloat X for any int64 n
+	pow := func(X *big.Float, n int64) *big.Float {
+		return bigfloat.Pow(X, big.NewFloat(float64(n)))
+	}
+
+	toFloat64 := func(x *big.Float) float64 {
+		val, _ := x.Float64()
+		return val
+	}
+
+	zero := big.NewFloat(0.0)
+	negZero := big.NewFloat(0.0).Neg(zero)
+	one := big.NewFloat(1.0)
+	negOne := big.NewFloat(-1.0)
+	two := big.NewFloat(2.0)
+	ten := big.NewFloat(10.0)
+	inf := big.NewFloat(0.0).SetInf(false)
+	negInf := big.NewFloat(0.0).SetInf(true)
+
+	tests := testCmpSlice{
+		{"pow(inf, 0)", pow(inf, 0), one, assert.Equal},
+		{"pow(inf, 1)", pow(inf, 1), inf, assert.Equal},
+		{"pow(inf, 2)", pow(inf, 2), inf, assert.Equal},
+		{"pow(inf, -1)", pow(inf, -1), zero, assert.Equal},
+		{"pow(inf, -2)", pow(inf, -2), zero, assert.Equal},
+		{"pow(negInf, 0)", pow(negInf, 0), one, assert.Equal},
+		{"pow(negInf, 1)", pow(negInf, 1), negInf, assert.Equal},
+		{"pow(negInf, 2)", pow(negInf, 2), inf, assert.Equal},
+		{"pow(negInf, -1)", pow(negInf, -1), negZero, assert.Equal},
+		{"pow(negInf, -2)", pow(negInf, -2), zero, assert.Equal},
+		{"pow(zero, 0)", pow(zero, 0), one, assert.Equal},
+		{"pow(zero, 1)", pow(zero, 1), zero, assert.Equal},
+		{"pow(zero, 2)", pow(zero, 2), zero, assert.Equal},
+		{"pow(zero, -1)", pow(zero, -1), inf, assert.Equal},
+		{"pow(zero, -2)", pow(zero, -2), inf, assert.Equal},
+		{"pow(negZero, 0)", pow(negZero, 0), one, assert.Equal},
+		{"pow(negZero, 1)", pow(negZero, 1), negZero, assert.Equal},
+		{"pow(negZero, 2)", pow(negZero, 2), zero, assert.Equal},
+		{"pow(negZero, -1)", pow(negZero, -1), negInf, assert.Equal},
+		{"pow(negZero, -2)", pow(negZero, -2), inf, assert.Equal},
+		{"pow(one, 0)", pow(one, 0), one, assert.Equal},
+		{"pow(one, 1)", pow(one, 1), one, assert.Equal},
+		{"pow(one, 2)", pow(one, 2), one, assert.Equal},
+		{"pow(one, -1)", pow(one, -1), one, assert.Equal},
+		{"pow(one, -2)", pow(one, -2), one, assert.Equal},
+		{"pow(negOne, 0)", pow(negOne, 0), one, assert.Equal},
+		{"pow(negOne, 1)", pow(negOne, 1), negOne, assert.Equal},
+		{"pow(negOne, 2)", pow(negOne, 2), one, assert.Equal},
+		{"pow(negOne, 1)", pow(negOne, 1), negOne, assert.Equal},
+		{"pow(negOne, 2)", pow(negOne, 2), one, assert.Equal},
+		{"pow(two, 0)", pow(two, 0), one, assert.Equal},
+		{"pow(two, 1)", pow(two, 1), two, assert.Equal},
+		{"pow(two, 2)", pow(two, 2), big.NewFloat(0).Mul(two, two), assert.Equal},
+		{"pow(two, -1)", pow(two, -1), big.NewFloat(0).Quo(one, two), assert.Equal},
+		{"pow(two, -2)", pow(two, -2), big.NewFloat(0).Quo(one, big.NewFloat(0).Mul(two, two)), assert.Equal},
+		// Epsilon tests
+		{"pow(ten, 2)", toFloat64(pow(ten, 2)), math.Pow(10.0, 2), epsilon},
+		{"pow(ten, 5)", toFloat64(pow(ten, 5)), math.Pow(10.0, 5), epsilon},
+		{"pow(ten, 25)", toFloat64(pow(ten, 25)), math.Pow(10.0, 25), epsilon},
+		{"pow(ten, 250)", toFloat64(pow(ten, 250)), math.Pow(10.0, 250), epsilon},
+		{"pow(ten, -2)", toFloat64(pow(ten, -2)), math.Pow(10.0, -2), epsilon},
+		{"pow(ten, -5)", toFloat64(pow(ten, -5)), math.Pow(10.0, -5), epsilon},
+		{"pow(ten, -25)", toFloat64(pow(ten, -25)), math.Pow(10.0, -25), epsilon},
+		{"pow(ten, -250)", toFloat64(pow(ten, -250)), math.Pow(10.0, -250), epsilon},
+	}
+
+	runTests(t, tests)
+
+}
+
 // TestPMF implements unit tests for the bigbinomial.PMF function
 func TestPMF(t *testing.T) {
 
 	binomialPMF := func(ρ float64, n int64) func(k int64) float64 {
 		return func(k int64) float64 {
-			p := math.Pow(ρ, float64(k)) * math.Pow(1-ρ, float64(n-k))
-			p *= math.Gamma(float64(n+1)) / (math.Gamma(float64(k+1)) * math.Gamma(float64(n-k+1)))
-			return p
+			res := math.Pow(ρ, float64(k)) * math.Pow(1-ρ, float64(n-k))
+			res *= math.Gamma(float64(n+1)) / (math.Gamma(float64(k+1)) * math.Gamma(float64(n-k+1)))
+			return res
 		}
 	}
 
-	assertPMFTol := func(p float64, n int64, tol float64, t *testing.T) {
-		t.Helper()
-		floatPMF := binomialPMF(p, n)
-		bigPMF, _ := PMF(p, n)
+	pmfErr := func(ρ float64, n int64) float64 {
+		floatPMF := binomialPMF(ρ, n)
+		bigPMF, _ := PMF(ρ, n)
 		err := 0.0
 		for x := int64(0); x <= n; x++ {
 			err += math.Abs(bigPMF(x) - floatPMF(x))
 		}
-		if err > tol {
-			t.Fatal("Error:", err, "Tolerance:", tol)
-		}
+		return err
 	}
 
-	Tol := 1.0e-15
-
-	t.Run("PMF(0.5, 2)", func(t *testing.T) {
-		assertPMFTol(0.5, 2, Tol, t)
-	})
-	t.Run("PMF(0.5, 20)", func(t *testing.T) {
-		assertPMFTol(0.5, 20, Tol, t)
-	})
-	t.Run("PMF(0.5, 200)", func(t *testing.T) {
-		assertPMFTol(0.5, 200, Tol, t)
-	})
-
-	t.Run("PMF(0.15, 2)", func(t *testing.T) {
-		assertPMFTol(0.15, 2, Tol, t)
-	})
-	t.Run("PMF(0.15, 20)", func(t *testing.T) {
-		assertPMFTol(0.15, 20, Tol, t)
-	})
-	t.Run("PMF(0.15, 200)", func(t *testing.T) {
-		assertPMFTol(0.15, 200, Tol, t)
-	})
-
-	t.Run("PMF(0.5, 2)", func(t *testing.T) {
-		assertPMFTol(0.5, 2, Tol, t)
-	})
-	t.Run("PMF(0.5, 20)", func(t *testing.T) {
-		assertPMFTol(0.5, 20, Tol, t)
-	})
-	t.Run("PMF(0.5, 200)", func(t *testing.T) {
-		assertPMFTol(0.5, 200, Tol, t)
-	})
-
-	t.Run("PMF(0.5, 2)", func(t *testing.T) {
-		assertPMFTol(0.5, 2, Tol, t)
-	})
-	t.Run("PMF(0.5, 20)", func(t *testing.T) {
-		assertPMFTol(0.5, 20, Tol, t)
-	})
-	t.Run("PMF(0.5, 200)", func(t *testing.T) {
-		assertPMFTol(0.5, 200, Tol, t)
-	})
+	tests := testCmpSlice{
+		{"PMF(0.5, 3)", pmfErr(0.5, 3), 0.0, delta},
+		{"PMF(0.5, 30)", pmfErr(0.5, 30), 0.0, delta},
+		{"PMF(0.5, 150)", pmfErr(0.5, 150), 0.0, delta},
+		{"PMF(0.05, 3)", pmfErr(0.05, 3), 0.0, delta},
+		{"PMF(0.05, 30)", pmfErr(0.05, 30), 0.0, delta},
+		{"PMF(0.05, 150)", pmfErr(0.05, 150), 0.0, delta},
+		{"PMF(0.005, 3)", pmfErr(0.005, 3), 0.0, delta},
+		{"PMF(0.005, 30)", pmfErr(0.005, 30), 0.0, delta},
+		{"PMF(0.005, 150)", pmfErr(0.005, 150), 0.0, delta},
+	}
+	runTests(t, tests)
 }
 
 // TestCDF implements unit tests for the bigbinomial.CDF function
@@ -171,47 +156,33 @@ func TestCDF(t *testing.T) {
 	floatCDF, _ := CDF(ρ, n)
 	floatPMF, _ := PMF(ρ, n)
 
-	if floatCDF(n/2) != floatCDF(n/2-1)+floatPMF(n/2) {
-		t.Error("CDF(k) != CDF(k-1) + PMF(k)")
+	tests := testCmpSlice{
+		{"CDF(k) != CDF(k-1) + PMF(k)", floatCDF(n / 2), floatCDF(n/2-1) + floatPMF(n/2), assert.Equal},
+		{"CDF(k) != CDF(k+1) - PMF(k+1)", floatCDF(n / 2), floatCDF(n/2+1) - floatPMF(n/2+1), assert.Equal},
+		{"CDF(k) != CDF(k)", floatCDF(n / 2), floatCDF(n / 2), assert.Equal},
+		{"PMF(-1) != 0.0", floatPMF(-1), 0.0, assert.Equal},
+		{"PMF(n+1) != 0.0", floatPMF(n + 1), 0.0, assert.Equal},
+		{"CDF(-1) != 0.0", floatCDF(-1), 0.0, assert.Equal},
+		{"CDF(n+1) != 1.0", floatCDF(n + 1), 1.0, assert.Equal},
+		{"CDF(n) != 1.0", floatCDF(n), 1.0, assert.Equal},
 	}
 
-	if floatCDF(n/2) != floatCDF(n/2+1)-floatPMF(n/2+1) {
-		t.Error("CDF(k) != CDF(k+1) - PMF(k+1)")
+	runTests(t, tests)
+
+	errTests := []struct {
+		name string
+		ρ    float64
+		n    int64
+	}{
+		{"CDF(ρ, n) for ρ < 0.0", -1.0, n},
+		{"CDF(ρ, n) for ρ > 1.0", 2.0, n},
+		{"CDF(ρ, n) for n <= 0.0", ρ, 0},
 	}
 
-	if floatCDF(n/2) != floatCDF(n/2) {
-		t.Error("CDF(k) != CDF(k)")
-	}
-
-	if floatPMF(-1) != 0.0 {
-		t.Error("PMF(-1) != 0.0")
-	}
-
-	if floatPMF(n+1) != 0.0 {
-		t.Error("PMF(n+1) != 0.0")
-	}
-
-	if floatCDF(-1) != 0.0 {
-		t.Error("CDF(-1) != 0.0")
-	}
-
-	if floatCDF(n+1) != 1.0 {
-		t.Error("CDF(n+1) != 1.0")
-	}
-
-	if floatCDF(n) != 1.0 {
-		t.Error("CDF(n) != 1.0")
-	}
-
-	if _, err := CDF(-1.0, n); err == nil {
-		t.Error("ρ < 0.0 should be an error")
-	}
-
-	if _, err := CDF(2.0, n); err == nil {
-		t.Error("ρ > 1.0 should be an error")
-	}
-
-	if _, err := CDF(ρ, 0); err == nil {
-		t.Error("n <= 0 should be an error")
+	for _, tt := range errTests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := CDF(tt.ρ, tt.n)
+			assert.Error(t, err)
+		})
 	}
 }
