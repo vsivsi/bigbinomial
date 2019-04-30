@@ -1,11 +1,11 @@
 package bigbinomial
 
 import (
+	"github.com/stretchr/testify/assert"
+	"github.com/vsivsi/bigfloat"
 	"math"
 	"math/big"
 	"testing"
-
-	"github.com/vsivsi/bigfloat"
 )
 
 // TestPow tests the bigfloat.Pow function
@@ -20,172 +20,79 @@ func TestPow(t *testing.T) {
 	Inf := big.NewFloat(0.0).SetInf(false)
 	NegInf := big.NewFloat(0.0).SetInf(true)
 
-	Tol := 1.0e-15
-
-	bigAssert := func(got, want *big.Float, t *testing.T) {
-		t.Helper()
-		if got.Cmp(want) != 0 || got.Signbit() != want.Signbit() {
-			t.Fatal("Wanted:", want, "Got:", got)
-		}
-	}
-
-	bigAssertTol := func(got *big.Float, want, tol float64, t *testing.T) {
-		t.Helper()
-		gotFloat, _ := got.Float64()
-		if math.Abs(gotFloat-want)/(gotFloat+want) > tol {
-			t.Fatal("Wanted:", want, "Got:", gotFloat, "Tolerance:", tol)
-		}
-	}
-
 	// Pow Calculates X^n for a bigFloat X for any int64 n
 	Pow := func(X *big.Float, n int64) *big.Float {
 		return bigfloat.Pow(X, big.NewFloat(float64(n)))
 	}
 
-	t.Run("Pow(Inf, 0)", func(t *testing.T) {
-		bigAssert(Pow(Inf, 0), One, t)
-	})
-	t.Run("Pow(Inf, 1)", func(t *testing.T) {
-		bigAssert(Pow(Inf, 1), Inf, t)
-	})
-	t.Run("Pow(Inf, 2)", func(t *testing.T) {
-		bigAssert(Pow(Inf, 2), Inf, t)
-	})
+	Epsilon := func(tol float64) assert.ComparisonAssertionFunc {
+		return func(t assert.TestingT, expected, actual interface{}, msgAndArgs ...interface{}) bool {
+			return assert.InEpsilon(t, expected, actual, tol)
+		}
+	}(1.0e-15)
 
-	t.Run("Pow(Inf, -1)", func(t *testing.T) {
-		bigAssert(Pow(Inf, -1), Zero, t)
-	})
-	t.Run("Pow(Inf, -2)", func(t *testing.T) {
-		bigAssert(Pow(Inf, -2), Zero, t)
-	})
+	toFloat64 := func(x *big.Float) float64 {
+		val, _ := x.Float64()
+		return val
+	}
 
-	t.Run("Pow(NegInf, 0)", func(t *testing.T) {
-		bigAssert(Pow(NegInf, 0), One, t)
-	})
-	t.Run("Pow(NegInf, 1)", func(t *testing.T) {
-		bigAssert(Pow(NegInf, 1), NegInf, t)
-	})
-	t.Run("Pow(NegInf, 2)", func(t *testing.T) {
-		bigAssert(Pow(NegInf, 2), Inf, t)
-	})
-	t.Run("Pow(NegInf, -1)", func(t *testing.T) {
-		bigAssert(Pow(NegInf, -1), NegZero, t)
-	})
-	t.Run("Pow(NegInf, -2)", func(t *testing.T) {
-		bigAssert(Pow(NegInf, -2), Zero, t)
-	})
+	tests := []struct {
+		name   string
+		actual interface{}
+		expect interface{}
+		assert assert.ComparisonAssertionFunc
+	}{
+		{"Pow(Inf, 0)", Pow(Inf, 0), One, assert.Equal},
+		{"Pow(Inf, 1)", Pow(Inf, 1), Inf, assert.Equal},
+		{"Pow(Inf, 2)", Pow(Inf, 2), Inf, assert.Equal},
+		{"Pow(Inf, -1)", Pow(Inf, -1), Zero, assert.Equal},
+		{"Pow(Inf, -2)", Pow(Inf, -2), Zero, assert.Equal},
+		{"Pow(NegInf, 0)", Pow(NegInf, 0), One, assert.Equal},
+		{"Pow(NegInf, 1)", Pow(NegInf, 1), NegInf, assert.Equal},
+		{"Pow(NegInf, 2)", Pow(NegInf, 2), Inf, assert.Equal},
+		{"Pow(NegInf, -1)", Pow(NegInf, -1), NegZero, assert.Equal},
+		{"Pow(NegInf, -2)", Pow(NegInf, -2), Zero, assert.Equal},
+		{"Pow(Zero, 0)", Pow(Zero, 0), One, assert.Equal},
+		{"Pow(Zero, 1)", Pow(Zero, 1), Zero, assert.Equal},
+		{"Pow(Zero, 2)", Pow(Zero, 2), Zero, assert.Equal},
+		{"Pow(Zero, -1)", Pow(Zero, -1), Inf, assert.Equal},
+		{"Pow(Zero, -2)", Pow(Zero, -2), Inf, assert.Equal},
+		{"Pow(NegZero, 0)", Pow(NegZero, 0), One, assert.Equal},
+		{"Pow(NegZero, 1)", Pow(NegZero, 1), NegZero, assert.Equal},
+		{"Pow(NegZero, 2)", Pow(NegZero, 2), Zero, assert.Equal},
+		{"Pow(NegZero, -1)", Pow(NegZero, -1), NegInf, assert.Equal},
+		{"Pow(NegZero, -2)", Pow(NegZero, -2), Inf, assert.Equal},
+		{"Pow(One, 0)", Pow(One, 0), One, assert.Equal},
+		{"Pow(One, 1)", Pow(One, 1), One, assert.Equal},
+		{"Pow(One, 2)", Pow(One, 2), One, assert.Equal},
+		{"Pow(One, -1)", Pow(One, -1), One, assert.Equal},
+		{"Pow(One, -2)", Pow(One, -2), One, assert.Equal},
+		{"Pow(NegOne, 0)", Pow(NegOne, 0), One, assert.Equal},
+		{"Pow(NegOne, 1)", Pow(NegOne, 1), NegOne, assert.Equal},
+		{"Pow(NegOne, 2)", Pow(NegOne, 2), One, assert.Equal},
+		{"Pow(NegOne, 1)", Pow(NegOne, 1), NegOne, assert.Equal},
+		{"Pow(NegOne, 2)", Pow(NegOne, 2), One, assert.Equal},
+		{"Pow(Two, 0)", Pow(Two, 0), One, assert.Equal},
+		{"Pow(Two, 1)", Pow(Two, 1), Two, assert.Equal},
+		{"Pow(Two, 2)", Pow(Two, 2), big.NewFloat(0).Mul(Two, Two), assert.Equal},
+		{"Pow(Two, -1)", Pow(Two, -1), big.NewFloat(0).Quo(One, Two), assert.Equal},
+		{"Pow(Two, -2)", Pow(Two, -2), big.NewFloat(0).Quo(One, big.NewFloat(0).Mul(Two, Two)), assert.Equal},
+		// Epsilon tests
+		{"Pow(Ten, 2)", toFloat64(Pow(Ten, 2)), math.Pow(10.0, 2), Epsilon},
+		{"Pow(Ten, 5)", toFloat64(Pow(Ten, 5)), math.Pow(10.0, 5), Epsilon},
+		{"Pow(Ten, 25)", toFloat64(Pow(Ten, 25)), math.Pow(10.0, 25), Epsilon},
+		{"Pow(Ten, 250)", toFloat64(Pow(Ten, 250)), math.Pow(10.0, 250), Epsilon},
+		{"Pow(Ten, -2)", toFloat64(Pow(Ten, -2)), math.Pow(10.0, -2), Epsilon},
+		{"Pow(Ten, -5)", toFloat64(Pow(Ten, -5)), math.Pow(10.0, -5), Epsilon},
+		{"Pow(Ten, -25)", toFloat64(Pow(Ten, -25)), math.Pow(10.0, -25), Epsilon},
+		{"Pow(Ten, -250)", toFloat64(Pow(Ten, -250)), math.Pow(10.0, -250), Epsilon},
+	}
 
-	t.Run("Pow(Zero, 0)", func(t *testing.T) {
-		bigAssert(Pow(Zero, 0), One, t)
-	})
-	t.Run("Pow(Zero, 1)", func(t *testing.T) {
-		bigAssert(Pow(Zero, 1), Zero, t)
-	})
-	t.Run("Pow(Zero, 2)", func(t *testing.T) {
-		bigAssert(Pow(Zero, 2), Zero, t)
-	})
-	t.Run("Pow(Zero, -1)", func(t *testing.T) {
-		bigAssert(Pow(Zero, -1), Inf, t)
-	})
-	t.Run("Pow(Zero, -2)", func(t *testing.T) {
-		bigAssert(Pow(Zero, -2), Inf, t)
-	})
-
-	t.Run("Pow(NegZero, 0)", func(t *testing.T) {
-		bigAssert(Pow(NegZero, 0), One, t)
-	})
-	t.Run("Pow(NegZero, 1)", func(t *testing.T) {
-		bigAssert(Pow(NegZero, 1), NegZero, t)
-	})
-	t.Run("Pow(NegZero, 2)", func(t *testing.T) {
-		bigAssert(Pow(NegZero, 2), Zero, t)
-	})
-	t.Run("Pow(NegZero, -1)", func(t *testing.T) {
-		bigAssert(Pow(NegZero, -1), NegInf, t)
-	})
-	t.Run("Pow(NegZero, -2)", func(t *testing.T) {
-		bigAssert(Pow(NegZero, -2), Inf, t)
-	})
-
-	t.Run("Pow(One, 0)", func(t *testing.T) {
-		bigAssert(Pow(One, 0), One, t)
-	})
-	t.Run("Pow(One, 1)", func(t *testing.T) {
-		bigAssert(Pow(One, 1), One, t)
-	})
-	t.Run("Pow(One, 2)", func(t *testing.T) {
-		bigAssert(Pow(One, 2), One, t)
-	})
-	t.Run("Pow(One, -1)", func(t *testing.T) {
-		bigAssert(Pow(One, -1), One, t)
-	})
-	t.Run("Pow(One, -2)", func(t *testing.T) {
-		bigAssert(Pow(One, -2), One, t)
-	})
-
-	t.Run("Pow(NegOne, 0)", func(t *testing.T) {
-		bigAssert(Pow(NegOne, 0), One, t)
-	})
-	t.Run("Pow(NegOne, 1)", func(t *testing.T) {
-		bigAssert(Pow(NegOne, 1), NegOne, t)
-	})
-	t.Run("Pow(NegOne, 2)", func(t *testing.T) {
-		bigAssert(Pow(NegOne, 2), One, t)
-	})
-	t.Run("Pow(NegOne, 1)", func(t *testing.T) {
-		bigAssert(Pow(NegOne, 1), NegOne, t)
-	})
-	t.Run("Pow(NegOne, 2)", func(t *testing.T) {
-		bigAssert(Pow(NegOne, 2), One, t)
-	})
-
-	t.Run("Pow(Two, 0)", func(t *testing.T) {
-		bigAssert(Pow(Two, 0), One, t)
-	})
-	t.Run("Pow(Two, 1)", func(t *testing.T) {
-		bigAssert(Pow(Two, 1), Two, t)
-	})
-	t.Run("Pow(Two, 2)", func(t *testing.T) {
-		bigAssert(Pow(Two, 2), big.NewFloat(0).Mul(Two, Two), t)
-	})
-	t.Run("Pow(Two, -1)", func(t *testing.T) {
-		bigAssert(Pow(Two, -1), big.NewFloat(0).Quo(One, Two), t)
-	})
-	t.Run("Pow(Two, -2)", func(t *testing.T) {
-		bigAssert(Pow(Two, -2), big.NewFloat(0).Quo(One, big.NewFloat(0).Mul(Two, Two)), t)
-	})
-
-	t.Run("Pow(Ten, 2)", func(t *testing.T) {
-		// bigAssert(Pow(Ten, 2), big.NewFloat(math.Pow(10.0, 2)), t)
-		bigAssertTol(Pow(Ten, 2), math.Pow(10.0, 2), Tol, t)
-	})
-	t.Run("Pow(Ten, 5)", func(t *testing.T) {
-		// bigAssert(Pow(Ten, 5), big.NewFloat(math.Pow(10.0, 5)), t)
-		bigAssertTol(Pow(Ten, 5), math.Pow(10.0, 5), Tol, t)
-	})
-	t.Run("Pow(Ten, 25)", func(t *testing.T) {
-		// bigAssert(Pow(Ten, 25), big.NewFloat(math.Pow(10.0, 25)), t)
-		bigAssertTol(Pow(Ten, 25), math.Pow(10.0, 25), Tol, t)
-	})
-	t.Run("Pow(Ten, 250)", func(t *testing.T) {
-		// bigAssert(Pow(Ten, 250), big.NewFloat(math.Pow(10.0, 250)), t)
-		bigAssertTol(Pow(Ten, 250), math.Pow(10.0, 250), Tol, t)
-	})
-
-	// These don't work as equalities because the two libraries calculate negative exponents differently
-
-	t.Run("Pow(Ten, -2)", func(t *testing.T) {
-		bigAssertTol(Pow(Ten, -2), math.Pow(10.0, -2), Tol, t)
-	})
-	t.Run("Pow(Ten, -5)", func(t *testing.T) {
-		bigAssertTol(Pow(Ten, -5), math.Pow(10.0, -5), Tol, t)
-	})
-	t.Run("Pow(Ten, -25)", func(t *testing.T) {
-		bigAssertTol(Pow(Ten, -25), math.Pow(10.0, -25), Tol, t)
-	})
-	t.Run("Pow(Ten, -250)", func(t *testing.T) {
-		bigAssertTol(Pow(Ten, -250), math.Pow(10.0, -250), Tol, t)
-	})
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.assert(t, tt.actual, tt.expect)
+		})
+	}
 }
 
 // TestPMF implements unit tests for the bigbinomial.PMF function
