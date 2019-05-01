@@ -16,7 +16,7 @@ func Example() {
 	}
 
 	// If you flip a fair coin 100 times (ρ=0.5, n=100), the probability of flipping
-	// heads exactly 50 times (k=25) is PMF(ρ, n, k):
+	// heads exactly 50 times (k=50) is PMF(ρ, n, k):
 
 	pmf := binomialPMF(0.5, 100) // Return a function to calculate PMF(0.5, 100, k)
 	prob := pmf(50)              // prob = 0.07958923738717867, about 8%
