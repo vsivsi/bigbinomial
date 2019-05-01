@@ -29,9 +29,10 @@ numbers of trials than are possible using IEEE floating point math.
 
 Example Usage
 
-The binomial PMF calculates, for n independant binary trials each with success rate ρ, the probability that k out of n will be successful.
-For example: if you flip a fair coin 50 times (ρ=0.5, n=50), the probability of flipping heads exactly 25 times (k=25) is PMF(ρ, n, k).
-This package implements a function `PMF(ρ, n)` that returns a function `pmf(k)`.
+The binomial PMF calculates, for n independant binary trials each with success rate ρ, the probability
+that k out of n will be successful. For example: if you flip a fair coin 50 times (ρ=0.5, n=50), the
+probability of flipping heads exactly 25 times (k=25) is PMF(ρ, n, k). This package implements a function
+PMF(ρ, n) that returns a function pmf(k).
 
 		import "github.com/vsivsi/bigbinomial"
 
@@ -41,9 +42,13 @@ This package implements a function `PMF(ρ, n)` that returns a function `pmf(k)`
 		pmf, _ = bigbinomial.PMF(0.5, 1000)
 		prob = pmf(500)  // prob == 0.0252250181783608
 
-The binomial CDF calculates, for n independant binary trials each with success rate ρ, CDF(ρ, n, k) is the probability that between 0 and k trials will be successful.
-So for 1000 flips of a fair coin, cdf(500) calculates the probabilty that the number of heads will be less than or equal to 500.
-This package implements a function `CDF(ρ, n)` that returns a function `cdf(k)`. This implementation of cdf "memoizes" (see: https://en.wikipedia.org/wiki/Memoization) its results for increasing consecutive values of k, so that calling `cdf(k)` for k = 0...n will be much faster than for k = n...0 (O(n) vs O(n^2) time, using constant memory).
+The binomial CDF calculates, for n independant binary trials each with success rate ρ, the probability that
+between 0 and k trials will be successful. So for 1000 flips of a fair coin, CDF(0.5, 1000, 500) calculates
+the probabilty that the number of heads will be less than or equal to 500. This package implements a
+function CDF(ρ, n) that returns a function cdf(k). This implementation of cdf "memoizes" (see:
+https://en.wikipedia.org/wiki/Memoization) its results for increasing consecutive values of k, so that
+calling cdf(k) for k = 0...n will be much faster than for k = n...0 (O(n) vs O(n^2) time, using constant
+memory).
 
 		import "github.com/vsivsi/bigbinomial"
 
