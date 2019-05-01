@@ -54,5 +54,10 @@ memory).
 
 		cdf, _ := bigbinomial.CDF(0.5, 1000)
 		prob := cdf(500)   // prob == 0.5126125090891803
+
+Errors
+
+The CDF and PMF functions will return an error when called with out of range values for ρ (which must be > 0.0
+and < 1.0) or n (which must be > 1).
 */
 package bigbinomial
