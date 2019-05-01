@@ -1,5 +1,3 @@
-// Package bigbinomial calculates the binomial distribution for larger numbers
-// of (n) trials than is possible using ordinary floating point arithmetic.
 package bigbinomial
 
 import (
