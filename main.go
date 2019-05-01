@@ -61,6 +61,13 @@ func CDF(ρ float64, n int64) (func(k int64) float64, error) {
 
 		switch {
 
+		case k == lastK+1:
+			{
+				lastK++
+				lastVal += pmfFunc(k)
+				return lastVal
+			}
+
 		case k < 0:
 			return 0.0
 
@@ -69,13 +76,6 @@ func CDF(ρ float64, n int64) (func(k int64) float64, error) {
 
 		case k == lastK:
 			return lastVal
-
-		case k == lastK+1:
-			{
-				lastK++
-				lastVal += pmfFunc(k)
-				return lastVal
-			}
 
 		default:
 			{
