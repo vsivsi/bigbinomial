@@ -45,5 +45,4 @@
 //		import "github.com/vsivsi/bigbinomial"
 //		cdf, _ := bigbinomial.CDF(0.5, 1000)
 //		prob := cdf(500)   // prob == 0.5126125090891803
-
 package bigbinomial
