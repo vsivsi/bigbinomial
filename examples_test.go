@@ -29,9 +29,16 @@ func Example() {
 	prob = pmf(500) // prob == NaN  (Failure!)
 	fmt.Println("PMF(0.5, 1000, 500) =", prob)
 
+	// Using bigbinomial instead
+
+	pmf, _ = bigbinomial.PMF(0.5, 1000)
+	prob = pmf(500)
+	fmt.Println("PMF(0.5, 1000, 500) =", prob)
+
 	// Output:
 	// PMF(0.5, 100, 50) = 0.07958923738717867
 	// PMF(0.5, 1000, 500) = NaN
+	// PMF(0.5, 1000, 500) = 0.0252250181783608
 }
 
 func ExamplePMF() {
