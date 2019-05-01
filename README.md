@@ -1,4 +1,7 @@
 # bigbinomial
+
+[![Build Status](https://travis-ci.org/vsivsi/bigbinomial.svg?branch=master)](https://travis-ci.org/vsivsi/bigbinomial)
+
 Golang package implementing binomial distribution PMF and CDF functions, using the math/big library to allow calculations for larger numbers of trials than is possible using ordinary floating point arithmetic.
 
 ## Binomial Distribution Probability Mass Function (PMF)  
