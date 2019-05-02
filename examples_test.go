@@ -18,16 +18,16 @@ func Example() {
 	// If you flip a fair coin 100 times (ρ=0.5, n=100), the probability of flipping
 	// heads exactly 50 times (k=50) is PMF(ρ, n, k):
 
-	pmf := binomialPMF(0.5, 100) // Return a function to calculate PMF(0.5, 100, k)
-	prob := pmf(50)              // prob = 0.07958923738717867, about 8%
+	pmf := binomialPMF(0.5, 100)
+	prob := pmf(50)
 	fmt.Println("PMF(0.5, 100, 50) =", prob)
 
 	// But what if we want the answer for 500 heads out of 1000 flips?
 	// The float64 implementation breaks for large values of n
 
 	pmf = binomialPMF(0.5, 1000)
-	prob = pmf(500) // prob == NaN  (Failure!)
-	fmt.Println("PMF(0.5, 1000, 500) =", prob)
+	prob = pmf(500)
+	fmt.Println("PMF(0.5, 1000, 500) =", prob) // NaN (!)
 
 	// Using bigbinomial instead
 
