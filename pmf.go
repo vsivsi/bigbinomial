@@ -14,7 +14,7 @@ import (
 // The binomial PMF calculates, for n independant binary trials each with
 // success rate ρ, the probability that k out of n will be successful. For
 // example: if you flip a fair coin 100 times (ρ=0.5, n=100), the probability
-// of flipping heads exactly 50 times (k=25) is PMF(ρ, n, k).
+// of flipping heads exactly 50 times (k=50) is PMF(ρ, n, k).
 //
 // This package implements a function PMF(ρ, n) that returns a function pmf(k).
 //
